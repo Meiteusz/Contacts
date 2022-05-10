@@ -1,0 +1,40 @@
+﻿@model UserModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using (Html.BeginForm())
+{
+    <body>
+        <div id="container" class="form-group">
+            <div>
+                @Html.LabelFor(x => x.Name)
+                <div>@Html.TextBoxFor(x => x.Name)</div>
+                <div id="error-message">Name is required</div>
+            </div>
+            <div>
+                @Html.LabelFor(x => x.Company)
+                <div>@Html.TextBoxFor(x => x.Company)</div>
+            </div>
+            <div>
+                @Html.LabelFor(x => x.PersonalPhone)
+                <div>@Html.TextBoxFor(x => x.PersonalPhone)</div>
+            </div>
+            <div>
+                @Html.LabelFor(x => x.CommercialPhone)
+                <div>@Html.TextBoxFor(x => x.CommercialPhone)</div>
+            </div>
+        </div>
+        <div style="visibility: hidden;">@Html.TextBoxFor(x => x.Id)</div>
+        <div class="form-group">
+            <input type="submit" value="Register" class="btn btn-primary" asp-action="RegisterContact" />
+        </div>
+    </body>
+}
+
+<script>
+    $('#container').ready(function(){
+        $('#error-message').hide();
+    });
+</script>

@@ -1,0 +1,14 @@
+﻿body {
+}
+
+#container {
+    display: flex;
+}
+
+#container-1 {
+    flex: 0 0 50%;
+}
+
+#container-2 {
+    flex: 1;
+}

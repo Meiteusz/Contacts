@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ContactsWeb.Models.UserModel>
+
+@using (Html.BeginForm())
+{
+    <body>
+        <div class="panel panel-primary">
+            <div class="panel panel-primary">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(x => x.Id)
+                                <div>@Html.TextBox("Id")</div>
+                                @Html.DisplayNameFor(x => x.Name)
+                                <div>@Html.TextBox("Name")</div>
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(x => x.Company)
+                                <div>@Html.TextBox("Company")</div>
+                                @Html.DisplayNameFor(x => x.MainEmail)
+                                <div>@Html.TextBox("MainEmail")</div>
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(x => x.PersonalPhone)
+                                <div>@Html.TextBox("PersonalPhone")</div>
+                                @Html.DisplayNameFor(x => x.CommercialPhone)
+                                <div>@Html.TextBox("CommercialPhone")</div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div>
+                    <input type="submit" value="Search" asp-action="Search" class="btn btn-success" />
+                    <input type="submit" value="Clear / Refresh" asp-action="ClearRefresh" class="btn btn-warning" />
+                </div>
+            </div>
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th style="visibility: hidden;">@Html.DisplayNameFor(x => x.Id)</th>
+                        <th>@Html.DisplayNameFor(x => x.Name)</th>
+                        <th>@Html.DisplayNameFor(x => x.Company)</th>
+                        <th>@Html.DisplayNameFor(x => x.MainEmail)</th>
+                        <th>@Html.DisplayNameFor(x => x.PersonalPhone)</th>
+                        <th>@Html.DisplayNameFor(x => x.CommercialPhone)</th>
+                    </tr>
+                </thead>
+                @foreach (var contact in Model)
+                {
+                    <tr>
+                        <td style="visibility: hidden;">@Html.DisplayFor(x => contact.Id)</td>
+                        <td>@Html.DisplayFor(x => contact.Name)</td>
+                        <td>@Html.DisplayFor(x => contact.Company)</td>
+                        <td>@Html.DisplayFor(x => contact.MainEmail)</td>
+                        <td>@Html.DisplayFor(x => contact.PersonalPhone)</td>
+                        <td>@Html.DisplayFor(x => contact.CommercialPhone)</td>
+                        <td>@Html.ActionLink("Edit", "EditContact", "ContactsList", new { idContact = contact.Id }, new { @class = "btn btn-info" })</td>
+                        <td>@Html.ActionLink("Delete", "DeleteContact", "ContactsList", new { idContact = contact.Id }, new { @class = "btn btn-danger", @onclick = $"return confirm('Delete the contact: {contact.Name} and all your E-mails?')" })</td>
+                        <td>@Html.ActionLink("View Emails", "Index", "ViewContactsEmails", new { idContact = contact.Id }, new { @class = "btn btn-primary" })</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </body>
+}

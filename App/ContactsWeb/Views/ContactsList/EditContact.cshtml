@@ -1,0 +1,150 @@
+﻿@using System.Web
+@model ContactsEmailListModel;
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/EditContacts.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+    const { error } = require("jquery");
+</script>
+
+@using (Html.BeginForm())
+{
+    <body>
+        <div class="form-group" id="container">
+            <div class="form-group" id="container-1">
+                <div>
+                    @Html.LabelFor(x => x.ContactModel.Name)
+                    <div>@Html.TextBoxFor(x => x.ContactModel.Name)</div>
+                </div>
+                <div>
+                    @Html.LabelFor(x => x.ContactModel.MainEmail)
+                    <div>
+                        <input type="text" asp-for="ContactModel.MainEmail" readonly="readonly" />
+                        <input type="button" value="Show email's edit" id="btnShowHideEditEmails" class="btn btn-default" />
+                    </div>
+                </div>
+                <div>
+                    @Html.LabelFor(x => x.ContactModel.Company)
+                    <div>@Html.TextBoxFor(x => x.ContactModel.Company)</div>
+                </div>
+                <div>
+                    @Html.LabelFor(x => x.ContactModel.PersonalPhone)
+                    <div>@Html.TextBoxFor(x => x.ContactModel.PersonalPhone)</div>
+                </div>
+                <div>
+                    @Html.LabelFor(x => x.ContactModel.CommercialPhone)
+                    <div>@Html.TextBoxFor(x => x.ContactModel.CommercialPhone)</div>
+                </div>
+                <div style="visibility: hidden;">@Html.TextBoxFor(x => x.ContactModel.Id)</div>
+                <div>
+                    <input type="submit" value="Save" asp-action="SaveContact" class="btn btn-primary" />
+                </div>
+            </div>
+            <div class="form-group" id="container-2">
+                <div>
+                    @Html.Label("Email's")
+                    <div>
+                        <input id="id-Email" value="" style="visibility: hidden;" />
+                        <select class="form-control" id="ContactsEmailList">
+                            @foreach (var item in Model.ContactsEmailList)
+                            {
+                                <option>@item.Email</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div style="visibility: hidden;">@Html.TextBox("teste")</div>
+                <div>
+                    <div>@Html.TextBox("Email", "" , new { @id = "selectedEmail", @style = "width: 500px;" })</div>
+                </div>
+                <div>
+                    @Html.CheckBoxFor(x => x.IsMainEmail, new { @id = "isMainEmail" })
+                    MainEmail
+                </div>
+                <div style="visibility: hidden;">@Html.TextBox("teste")</div>
+                <div>
+                    <input type="button" value="Cancel" id="btnCancelEditEmail" class="btn btn-danger" />
+                    <input type="submit" value="Confirm" id="btnConfirmEditContactEmails" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    </body>
+}
+
+<script>
+
+      function isMainEmail(){
+       $.ajax({
+              url: '@Url.Action("CheckMainEmail")',
+              data: { idContact: @Model.ContactModel.Id,
+                      email: $('#selectedEmail').val()
+                    },
+              success: function(response){
+                    if (response){
+                       $('#isMainEmail').prop('checked', true);
+                   }else{
+                       $('#isMainEmail').prop('checked', false);
+                   }
+              }
+          });
+     }
+
+     $('#container-2').ready(function() {
+     $('#selectedEmail').val($('#ContactsEmailList').val());
+     $('#container-2').hide();
+     isMainEmail();
+     });
+
+     $(function(){
+         $('#btnShowHideEditEmails').click(function(){
+             if ($('#container-2').is(':visible')){
+                 $('#container-2').hide();
+                 $('#btnShowHideEditEmails').val("Show email's edit");
+             }else{
+                 $('#container-2').show();
+                 $('#btnShowHideEditEmails').val("Hide email's edit");
+             }
+         })
+     });
+
+    $("#ContactsEmailList").change(function () {
+        $('#selectedEmail').val($('#ContactsEmailList').val());
+    });
+
+    $("#ContactsEmailList").change(function() {
+        isMainEmail();
+    });
+
+    $('#btnCancelEditEmail').click(function() {
+        if (confirm('Cancel edit of contact emails?')){
+            $('#container-2').hide();
+        }
+    });
+
+    $('#btnConfirmEditContactEmails').click(function() {
+        
+        GetEmailIdBySelectedEmail();
+
+        $.ajax({
+            url: '@Url.Action("ConfirmEditContactEmails")',
+            data: { idContact: @Model.ContactModel.Id,
+                    idEmail: $('#id-Email').val(),
+                    isMainEmail: $('#isMainEmail').is(":checked") ? true : false,
+                    email: $('#selectedEmail').val()
+                  }
+        });
+    });
+
+    function GetEmailIdBySelectedEmail(){
+        var a = $.ajax({
+            url: '@Url.Action("GetEmailIdByEmail")',
+            async: false,
+            data: { 
+                    email: $('#ContactsEmailList').val()
+                  },
+            success: function (response){
+                $('#id-Email').val(response);
+            }
+        });
+    }
+</script>

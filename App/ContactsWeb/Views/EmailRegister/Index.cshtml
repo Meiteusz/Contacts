@@ -1,0 +1,26 @@
+﻿@using System.Web
+@model EmailListModel
+
+@using (Html.BeginForm())
+{
+    <body>
+        <div>
+            <h4>Olá @ViewBag.ContactName cadastre seus(s) emails aqui!</h4>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Email)
+            <div>
+                @Html.TextBoxFor(x => x.Email, new { @style = "width: 500px;" })
+                <div>
+                    @Html.CheckBoxFor(x => x.IsMainEmail)
+                    Main Email
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="<<< Register Contact" asp-action="RegisterContact" class="btn btn-primary" />
+            <input type="submit" value="Register Email" asp-action="RegisterEmailList" class="btn btn-primary" />
+            <input type="submit" value="View Contacts >>>" asp-action="ViewContacts" class="btn btn-primary" />
+        </div>
+    </body>
+}
