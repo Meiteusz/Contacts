@@ -19,11 +19,10 @@ namespace Models
             return await context.ResponseSaveChangesAsync();
         }
 
-        public async virtual Task<ResponseId> CreateAsync() => new ResponseId();
-
         public async virtual Task<Response> SavedChangesAsync() => new Response();
 
-        public async virtual Task<Response> DeleteAsync() => new Response();
-        public async virtual Task<Response> DeletedAsync() => new Response();
+        public async virtual Task<Response> Delete() => new Response();
+
+        public async virtual Task<Response> Deleted() => new Response();
     }
 }

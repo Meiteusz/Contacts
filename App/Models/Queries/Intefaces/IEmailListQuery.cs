@@ -5,9 +5,9 @@ namespace Models.Queries.Intefaces
 {
     public interface IEmailListQuery
     {
-        Task<ResponseQuery<EmailList>> GetAllContactEmails(int idContact);
-        Task<EmailList?> GetFirstOrDefaultAsync(int? id);
+        Task<ResponseQuery<EmailList>> GetAllContactEmails(int contactId);
+        Task<EmailList?> GetFirstOrDefaultAsync(int? emailId);
         Task<int> GetEmailIdByEmail(string email);
-        Task<string> GetEmailById(int idEmail);
+        Task<string> GetEmailById(int emailId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Controllers;
+using Models;
 using Models.Queries;
 using Models.Queries.Intefaces;
 using Models.Services;
@@ -10,7 +11,7 @@ namespace ContactsWeb
     {
         public static void InjectService(IServiceCollection service)
         {
-            service.AddScoped<IUserController, UserController>();
+            service.AddScoped<IContactController, ContactController>();
             service.AddScoped<IEmailListController, EmailListController>();
 
             service.AddScoped<IContactsService, ContactsService>();
@@ -18,6 +19,7 @@ namespace ContactsWeb
 
             service.AddScoped<IContactsQuery, ContactsQuery>();
             service.AddScoped<IEmailListQuery, EmailListQuery>();
+            service.AddScoped<IQueryEntityHelper, QueryEntityHelper>();
         }
     }
 }

@@ -8,28 +8,28 @@ namespace ContactsWeb.Controllers
 {
     public class ContactsListController : Controller
     {
-        private readonly IUserController _contactsController;
+        private readonly IContactController _contactsController;
         private readonly IEmailListController _emailListController;
         private readonly IMapper _mapper;
 
-        public ContactsListController(IUserController userController, IEmailListController emailListController, IMapper mapper)
+        public ContactsListController(IContactController contactController, IEmailListController emailListController, IMapper mapper)
         {
-            this._contactsController = userController;
+            this._contactsController = contactController;
             this._emailListController = emailListController;
             this._mapper = mapper;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var contactListModel = MappingProfile.UserModelReverseMap(_contactsController.GetAllContacts().Result.Results.ToList());
-            
             return await Task.Run(() => { return View(contactListModel); });
         }
 
-        public async Task<IActionResult> Search(UserModel userModel)
+        public async Task<IActionResult> Search(ContactModel contactModel)
         {
-            var userFiltered = _mapper.Map<User>(userModel);
-            var contactsListFiltered = _contactsController.GetContactsByFilters(userFiltered).Result.Results;
+            var contactFiltered = _mapper.Map<Contact>(contactModel);
+            var contactsListFiltered = _contactsController.GetContactsByFilters(contactFiltered).Result.Results;
             var contactsListFilteredModel = MappingProfile.UserModelReverseMap(contactsListFiltered.ToList());
 
             return await Task.Run(() => { return View("Index", contactsListFilteredModel); });
@@ -38,32 +38,22 @@ namespace ContactsWeb.Controllers
         public async Task<IActionResult> ClearRefresh()
         {
             var contactListModel = MappingProfile.UserModelReverseMap(_contactsController.GetAllContacts().Result.Results.ToList());
-
             return await Task.Run(() => { return View("Index", contactListModel); });
         }
 
-        public async Task<IActionResult> EditContact(int idContact)
+        
+        public async Task<IActionResult> EditContact(int contactId)
         {
-            var contactsEmailListModel = MappingProfile.UniqueUserModelReverseMap(await _contactsController.GetFirstOrDefault(idContact));
-            var teste = _emailListController.GetAllContactEmails(idContact).Result.Results;
-            var teste2 = new List<EmailListModel>();
-
-            foreach (var item in teste)
-            {
-                var teste3 = new EmailListModel();
-                teste3.Id = item.Id;
-                teste3.Email = item.Email;
-                teste2.Add(teste3);
-            }
-
-            contactsEmailListModel.ContactsEmailList = teste2;
+            var contactsEmailListModel = MappingProfile.UniqueUserModelReverseMap(await _contactsController.GetFirstOrDefault(contactId));
+            var emailList = _emailListController.GetAllContactEmails(contactId).Result.Results;
+            contactsEmailListModel.ContactsEmailList = MappingProfile.EmailListModelReverseMap(emailList.ToList());
 
             return await Task.Run(() => { return View(contactsEmailListModel); });
         }
 
-        public async Task<IActionResult> DeleteContact(int idContact)
+        public async Task<IActionResult> DeleteContact(int contactId)
         {
-            var response = await _contactsController.DeleteContact(idContact);
+            var response = await _contactsController.DeleteContact(contactId);
 
             if (response.Success)
             {
@@ -72,34 +62,36 @@ namespace ContactsWeb.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> ViewContactsList(int idContact)
-            => await Task.Run(() => RedirectToAction("Index", "ContactsList", new { idContact = idContact }));
+        [HttpGet]
+        public async Task<IActionResult> ViewContactsList(int contactId)
+            => await Task.Run(() => RedirectToAction("Index", "ContactsList", new { contactId = contactId }));
 
         public async Task<IActionResult> SaveContact(ContactsEmailListModel contactsEmailListModel)
         {
-            var contact = _mapper.Map<User>(contactsEmailListModel.ContactModel);
+            var contact = _mapper.Map<Contact>(contactsEmailListModel.ContactModel);
             var response = await _contactsController.UpdateContact(contact);
-            return RedirectToAction("EditContact", "ContactsList", new { idContact = response.IdReturn } );
+            return RedirectToAction("EditContact", "ContactsList", new { contactId = response.IdReturn } );
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEditContactEmails(int idContact, int idEmail, bool isMainEmail, string email)
+        public async Task<IActionResult> ConfirmEditContactEmails(int contactId, int idEmail, bool isMainEmail, string email)
         {
             var response = await _emailListController.UpdateEmail(idEmail, email);
 
             if (isMainEmail)
-                await _contactsController.SetMainEmailContact(idContact, email);
+                await _contactsController.SetContactMainEmail(contactId, email);
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> CheckMainEmail(int idContact, string email)
+        public async Task<IActionResult> CheckMainEmail(int contactId, string email)
         {
-            var isMainEmail = await _contactsController.CheckMainEmail(idContact, email);
+            var isMainEmail = await _contactsController.CheckMainEmail(contactId, email);
             return Json(isMainEmail);
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetEmailIdByEmail(string email)
         {
             var emailId = await _emailListController.GetEmailIdByEmail(email);

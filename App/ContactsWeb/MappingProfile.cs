@@ -8,13 +8,15 @@ namespace ContactsWeb
     {
         public MappingProfile()
         {
-            CreateMap<User, UserModel>().ReverseMap();
+            CreateMap<Contact, ContactModel>().ReverseMap();
             CreateMap<EmailList, EmailListModel>().ReverseMap();
         }
 
-        public static ContactsEmailListModel UniqueUserModelReverseMap(User user)
+        // Provisionally code below
+        
+        public static ContactsEmailListModel UniqueUserModelReverseMap(Contact user)
         {
-            var userModel = new UserModel()
+            var userModel = new ContactModel()
             {
                 Id = user.Id,
                 Name = user.Name,
@@ -26,22 +28,36 @@ namespace ContactsWeb
             return new ContactsEmailListModel() { ContactModel = userModel };
         }
 
-        public static IEnumerable<UserModel> UserModelReverseMap(List<User> userList)
+        public static IEnumerable<ContactModel> UserModelReverseMap(List<Contact> userList)
         {
-            var contactEmailListModel = new List<UserModel>();
+            var contactsModel = new List<ContactModel>();
 
-            foreach (var item in userList)
+            foreach (var user in userList)
             {
-                var contactsModel = new UserModel();
-                contactsModel.Id = item.Id;
-                contactsModel.Name = item.Name;
-                contactsModel.Company = item.Company;
-                contactsModel.MainEmail = item.MainEmail;
-                contactsModel.PersonalPhone = item.PersonalPhone;
-                contactsModel.CommercialPhone = item.CommercialPhone;
-                contactEmailListModel.Add(contactsModel);
+                var contactModel = new ContactModel();
+                contactModel.Id = user.Id;
+                contactModel.Name = user.Name;
+                contactModel.Company = user.Company;
+                contactModel.MainEmail = user.MainEmail;
+                contactModel.PersonalPhone = user.PersonalPhone;
+                contactModel.CommercialPhone = user.CommercialPhone;
+                contactsModel.Add(contactModel);
             }
-            return contactEmailListModel;
+            return contactsModel;
+        }
+
+        public static IEnumerable<EmailListModel> EmailListModelReverseMap(List<EmailList> emailList)
+        {
+            var EmailListModel = new List<EmailListModel>();
+
+            foreach (var email in emailList)
+            {
+                var emailModel = new EmailListModel();
+                emailModel.Id = email.Id;
+                emailModel.Email = email.Email;
+                EmailListModel.Add(emailModel);
+            }
+            return EmailListModel;
         }
     }
 }

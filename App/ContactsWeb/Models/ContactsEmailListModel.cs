@@ -2,7 +2,7 @@
 {
     public class ContactsEmailListModel
     {
-        public UserModel ContactModel { get; set; } = new UserModel();
+        public ContactModel ContactModel { get; set; } = new ContactModel();
         public IEnumerable<EmailListModel> ContactsEmailList { get; set; } = new List<EmailListModel>();
         public int idEmail { get; set; }
         public bool IsMainEmail { get; set; }

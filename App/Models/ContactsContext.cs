@@ -7,7 +7,7 @@ namespace Models
 {
     public class ContactsContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<Contact> Users { get; set; }
         public DbSet<EmailList> EmailList { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

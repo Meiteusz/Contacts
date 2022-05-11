@@ -1,7 +1,10 @@
-﻿namespace Models.Services.Interfaces
+﻿using Models.Entities;
+
+namespace Models.Services.Interfaces
 {
     public interface IEmailListService
     {
-        Task<ResponseId> UpdateEmailAsync(int idEmail, string email);
+        Task<ResponseId> CreateAsync(EmailList emailList);
+        Task<ResponseId> UpdateEmailAsync(int emailId, string email);
     }
 }

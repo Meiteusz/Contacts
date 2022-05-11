@@ -20,31 +20,8 @@ namespace Models.Entities
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public Contact User { get; set; }
 
         #endregion
-
-        public async override Task<ResponseId> CreateAsync()
-        {
-            try
-            {
-                using (var contactsContext = new ContactsContext())
-                {
-                    await contactsContext.AddAsync(this);
-                    var response = await base.SaveChangesAsync(contactsContext);
-
-                    if (response.Success)
-                    {
-                        await base.SavedChangesAsync();
-                        return new ResponseId() { Success = true, IdReturn = this.Id.ToLong()};
-                    }
-                    return new ResponseId();
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseId() { Message = ex.Message };
-            }
-        }
     }
 }

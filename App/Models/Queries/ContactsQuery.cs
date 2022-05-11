@@ -8,9 +8,16 @@ using System.Text;
 
 namespace Models.Queries
 {
-    public class ContactsQuery : IContactsQuery, IBaseQuery<User>
+    public class ContactsQuery : IContactsQuery, IBaseQuery<Contact>
     {
-        public async Task<ResponseQuery<User>> GetAllAsync()
+        private readonly IQueryEntityHelper _queryEntityHelper;
+
+        public ContactsQuery(IQueryEntityHelper queryEntityHelper)
+        {
+            this._queryEntityHelper = queryEntityHelper;
+        }
+
+        public async Task<ResponseQuery<Contact>> GetAllAsync()
         {
             try
             {
@@ -20,18 +27,18 @@ namespace Models.Queries
 
                     if (contactsList.Count > 0)
                     {
-                        return new ResponseQuery<User>() { Success = true, Results = contactsList };
+                        return new ResponseQuery<Contact>() { Success = true, Results = contactsList };
                     }
-                    return new ResponseQuery<User>() { Message = "None contact added on the contacts list yet" };
+                    return new ResponseQuery<Contact>() { Message = "None contact added on the contacts list yet" };
                 }
             }
             catch (Exception ex)
             {
-                return new ResponseQuery<User>() { Message = ex.Message };
+                return new ResponseQuery<Contact>() { Message = ex.Message };
             }
         }
 
-        public async Task<User?> GetFirstOrDefaultAsync(int? id)
+        public async Task<Contact?> GetFirstOrDefaultAsync(int? id)
         {
             using (var context = new ContactsContext())
             {
@@ -41,51 +48,32 @@ namespace Models.Queries
             }
         }
 
-        public async Task<ResponseQuery<User>> GetContactsByFilterAsync(User userFilter)
+        public async Task<ResponseQuery<Contact>> GetContactsByFilterAsync(Contact userFilter)
         {
-            var entities = new List<User>();
-
             try
             {
                 using (var context = new ContactsContext())
                 {
-                    using (var command = context.Database.GetDbConnection().CreateCommand())
-                    {
-                        command.CommandText = BuildUserFilterQuery(userFilter);
-                        command.CommandType = CommandType.Text;
-
-                        await context.Database.OpenConnectionAsync();
-
-                        using (SqlDataReader result = (SqlDataReader)await command.ExecuteReaderAsync())
-                        {
-                            while (await result.ReadAsync())
-                            {
-                                var entity = await result.ConvertToObject<User>();
-                                entities.Add(entity);
-                            }
-                        }
-                    }
-                    await context.Database.CloseConnectionAsync();
-                    return new ResponseQuery<User>() { Success = true, Results = entities };
+                    return await _queryEntityHelper.ExecDatabaseQuery<Contact>(context, BuildUserFilterQuery(userFilter));
                 }
             }
             catch (Exception ex)
             {
-                return new ResponseQuery<User>() { Message = ex.Message };
+                return new ResponseQuery<Contact>() { Message = ex.Message };
             }
         }
 
-        public async Task<bool> CheckMainEmail(int idContact, string email)
+        public async Task<bool> CheckMainEmail(int contactId, string email)
         {
             using (var context = new ContactsContext())
             {
-                return await context.Users.Where(x => x.Id == idContact)
+                return await context.Users.Where(x => x.Id == contactId)
                                            .Select(f => f.MainEmail)
                                            .SingleOrDefaultAsync() == email;
             }
         }
 
-        public string BuildUserFilterQuery(User userFilter)
+        public string BuildUserFilterQuery(Contact userFilter)
         {
             var query = new StringBuilder()
             .Append($"SELECT * FROM USERS WHERE NAME LIKE '{userFilter.Name}%' ");
@@ -108,13 +96,13 @@ namespace Models.Queries
             return query.ToString();
         }
 
-        public async Task<string> GetContactNameById(int idContact)
+        public async Task<string> GetContactNameById(int contactId)
         {
             using (var context = new ContactsContext())
             {
-                return await context.Users.Where(x => x.Id == idContact)
+                return await context.Users.Where(x => x.Id == contactId)
                                     .Select(f => f.Name)
-                                    .SingleOrDefaultAsync();
+                                    .SingleOrDefaultAsync() ?? string.Empty;
             }
         } 
     }

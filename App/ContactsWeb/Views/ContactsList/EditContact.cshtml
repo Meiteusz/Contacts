@@ -76,7 +76,7 @@
       function isMainEmail(){
        $.ajax({
               url: '@Url.Action("CheckMainEmail")',
-              data: { idContact: @Model.ContactModel.Id,
+              data: { contactId: @Model.ContactModel.Id,
                       email: $('#selectedEmail').val()
                     },
               success: function(response){
@@ -127,7 +127,7 @@
 
         $.ajax({
             url: '@Url.Action("ConfirmEditContactEmails")',
-            data: { idContact: @Model.ContactModel.Id,
+            data: { contactId: @Model.ContactModel.Id,
                     idEmail: $('#id-Email').val(),
                     isMainEmail: $('#isMainEmail').is(":checked") ? true : false,
                     email: $('#selectedEmail').val()

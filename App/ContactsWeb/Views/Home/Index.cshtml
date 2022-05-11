@@ -1,4 +1,4 @@
-﻿@model UserModel
+﻿@model ContactModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -11,7 +11,6 @@
             <div>
                 @Html.LabelFor(x => x.Name)
                 <div>@Html.TextBoxFor(x => x.Name)</div>
-                <div id="error-message">Name is required</div>
             </div>
             <div>
                 @Html.LabelFor(x => x.Company)
@@ -32,9 +31,3 @@
         </div>
     </body>
 }
-
-<script>
-    $('#container').ready(function(){
-        $('#error-message').hide();
-    });
-</script>

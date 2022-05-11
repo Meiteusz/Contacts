@@ -22,14 +22,14 @@ namespace Models.Queries
             }
         }
 
-        public async Task<ResponseQuery<EmailList>> GetAllContactEmails(int idContact)
+        public async Task<ResponseQuery<EmailList>> GetAllContactEmails(int contactId)
         {
             try
             {
                 using (var context = new ContactsContext())
                 {
                     var contactsEmailList = await context.EmailList
-                                                         .Where(x => x.UserId == idContact)
+                                                         .Where(x => x.UserId == contactId)
                                                          .ToListAsync();
 
                     if (contactsEmailList.Count > 0)

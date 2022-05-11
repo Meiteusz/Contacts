@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ContactsWeb.Models.UserModel>
+﻿@model IEnumerable<ContactsWeb.Models.ContactModel>
 
 @using (Html.BeginForm())
 {
@@ -54,9 +54,9 @@
                         <td>@Html.DisplayFor(x => contact.MainEmail)</td>
                         <td>@Html.DisplayFor(x => contact.PersonalPhone)</td>
                         <td>@Html.DisplayFor(x => contact.CommercialPhone)</td>
-                        <td>@Html.ActionLink("Edit", "EditContact", "ContactsList", new { idContact = contact.Id }, new { @class = "btn btn-info" })</td>
-                        <td>@Html.ActionLink("Delete", "DeleteContact", "ContactsList", new { idContact = contact.Id }, new { @class = "btn btn-danger", @onclick = $"return confirm('Delete the contact: {contact.Name} and all your E-mails?')" })</td>
-                        <td>@Html.ActionLink("View Emails", "Index", "ViewContactsEmails", new { idContact = contact.Id }, new { @class = "btn btn-primary" })</td>
+                        <td>@Html.ActionLink("Edit", "EditContact", "ContactsList", new { contactId = contact.Id }, new { @class = "btn btn-info" })</td>
+                        <td>@Html.ActionLink("Delete", "DeleteContact", "ContactsList", new { contactId = contact.Id }, new { @class = "btn btn-danger", @onclick = $"return confirm('Delete the contact: {contact.Name} and all your E-mails?')" })</td>
+                        <td>@Html.ActionLink("View Emails", "Index", "ViewContactsEmails", new { contactId = contact.Id }, new { @class = "btn btn-primary" })</td>
                     </tr>
                 }
             </table>

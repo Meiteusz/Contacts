@@ -5,7 +5,9 @@ namespace Models.Services.Interfaces
 {
     public interface IContactsService
     {
-        Task<Response> UpdateMainEmailContact(int idContact, string mainEmailContact);
-        Task<ResponseId> UpdateContactAsync(User contact);
+        Task<ResponseId> CreateAsync(Contact contact);
+        Task<Response> DeleteAsync(Contact contact);
+        Task<Response> UpdateMainEmailContact(int contactId, string mainEmailContact);
+        Task<ResponseId> UpdateContactAsync(Contact contact);
     }
 }

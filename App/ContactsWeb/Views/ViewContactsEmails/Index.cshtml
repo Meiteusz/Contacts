@@ -5,7 +5,7 @@
 {
     <body>
         <div class="panel panel-primary">
-            @Html.ActionLink("Register a email", "RegisterEmail", "ViewContactsEmails", new { id = HttpUtility.ParseQueryString(Context.Request.QueryString.Value).Get("idContact") }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Register a email", "RegisterEmail", "ViewContactsEmails", new { contactId = HttpUtility.ParseQueryString(Context.Request.QueryString.Value).Get("contactId") }, new { @class = "btn btn-primary" })
             <table class="table table-condensed table-striped">
                 <thead>
                     <tr>

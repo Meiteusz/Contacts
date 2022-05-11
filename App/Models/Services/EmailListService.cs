@@ -1,4 +1,5 @@
-﻿using Models.Queries.Intefaces;
+﻿using Models.Entities;
+using Models.Queries.Intefaces;
 using Models.Services.Interfaces;
 
 namespace Models.Services
@@ -10,6 +11,29 @@ namespace Models.Services
         public EmailListService(IEmailListQuery emailListQuery)
         {
             this._emailListQuery = emailListQuery;
+        }
+
+        public async Task<ResponseId> CreateAsync(EmailList emailList)
+        {
+            try
+            {
+                using (var contactsContext = new ContactsContext())
+                {
+                    await contactsContext.AddAsync(emailList);
+                    var response = await emailList.SaveChangesAsync(contactsContext);
+
+                    if (response.Success)
+                    {
+                        await emailList.SavedChangesAsync();
+                        return new ResponseId() { Success = true, IdReturn = emailList.Id.ToLong() };
+                    }
+                    return new ResponseId();
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseId() { Message = ex.Message };
+            }
         }
 
         public async Task<ResponseId> UpdateEmailAsync(int idEmail, string email)

@@ -13,20 +13,22 @@ namespace ContactsWeb.Controllers
             this._emailListController = emailListController;
         }
 
-        public async Task<IActionResult> Index(int idContact)
+        [HttpGet]
+        public async Task<IActionResult> Index(int contactId)
         {
-            var emailContactsList = _emailListController.GetAllContactEmails(idContact).Result.Results;
+            var contactsEmailList = _emailListController.GetAllContactEmails(contactId).Result.Results;
             var emailListModel = new List<EmailListModel>();
 
-            foreach (var emailContact in emailContactsList)
+            foreach (var contactEmail in contactsEmailList)
             {
-                emailListModel.Add(new EmailListModel() { Email = emailContact.Email });
+                emailListModel.Add(new EmailListModel() { Email = contactEmail.Email });
             }
 
             return await Task.Run(() => { return View(emailListModel); });
         }
 
-        public async Task<IActionResult> RegisterEmail(int id)
-            => await Task.Run(() => { return RedirectToAction("Index", "EmailRegister", new { idContact = id }); });
+        [HttpGet]
+        public async Task<IActionResult> RegisterEmail(int contactId)
+            => await Task.Run(() => { return RedirectToAction("Index", "EmailRegister", new { contactId = contactId }); });
     }
 }

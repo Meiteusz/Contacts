@@ -9,38 +9,36 @@ namespace ContactsWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IUserController _userController;
+        private readonly IContactController _contactController;
         private readonly IMapper _mapper;
 
-        public HomeController(IUserController userController, IMapper mapper)
+        public HomeController(IContactController contactController, IMapper mapper)
         {
-            this._userController = userController;
+            this._contactController = contactController;
             this._mapper = mapper;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return await Task.Run(() => { return View(); });
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterContact(UserModel userModel)
+        public async Task<IActionResult> RegisterContact(ContactModel userModel)
         {
-            var userCreated = _mapper.Map<User>(userModel);
-            userCreated.MainEmail = string.Empty; //tirar dps
-            var response = await _userController.RegisterUser(userCreated);
+            var createdUser = _mapper.Map<Contact>(userModel);
+            var response = await _contactController.RegisterContact(createdUser);
 
             if (response.Success)
             {
-                return RedirectToAction("Index", "EmailRegister", new { id = response.IdReturn });
+                return RedirectToAction("Index", "EmailRegister", new { contactId = response.IdReturn });
             }
             return View("Index");
         }
 
         public IActionResult Privacy()
-        {
-            return View();
-        }
+            => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
